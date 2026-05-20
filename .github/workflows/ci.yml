@@ -20,8 +20,8 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Run tests
-        run: mvn -B verify
+      - name: Run tests with JaCoCo
+        run: mvn clean verify
 
       - name: Upload JaCoCo report
         if: always()
