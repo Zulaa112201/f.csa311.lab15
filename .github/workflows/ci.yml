@@ -1,31 +1,24 @@
-name: CI
-
-on:
-  push:
-    branches: [main]
-  pull_request:
-
 jobs:
   build-test:
     runs-on: ubuntu-latest
-    
+    strategy:
+      fail-fast: false
+      matrix:
+        java: [17, 21]  # Энэ мөр л Matrix-ыг идэвхжүүлнэ
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Set up JDK 21
+      - name: Set up JDK
         uses: actions/setup-java@v4
         with:
-          java-version: '21'
+          java-version: ${{ matrix.java }} # Энд matrix ашиглана
           distribution: 'temurin'
           cache: maven
-
-      - name: Run tests with JaCoCo
+      - name: Run Maven Verification
         run: mvn clean verify
-
       - name: Upload JaCoCo report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: jacoco-report
+          name: jacoco-report-${{ matrix.java }} # Одоо 2 өөр артефакт үүснэ
           path: target/site/jacoco/
